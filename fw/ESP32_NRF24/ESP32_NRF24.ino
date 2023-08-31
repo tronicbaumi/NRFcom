@@ -44,6 +44,7 @@ void setup() {
     // some boards need to wait to ensure access to serial over USB
   }
 
+  Serial.println("Started.....");
   // initialize the transceiver on the SPI bus
   if (!radio.begin()) {
     Serial.println(F("radio hardware is not responding!!"));

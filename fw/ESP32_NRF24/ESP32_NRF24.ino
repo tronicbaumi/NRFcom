@@ -36,12 +36,19 @@ bool role = false;  // true = TX role, false = RX role
 // on every successful transmission
 float payload = 0.0;
 
+//SPIClass* hspi = nullptr; // we'll instantiate this in the `setup()` function
+
 void setup() {
+
+  //hspi = new SPIClass(HSPI); // by default VSPI is used
+  //hspi->begin();
 
   Serial.begin(115200);
   while (!Serial) {
     // some boards need to wait to ensure access to serial over USB
   }
+
+  Serial.println("Started.....");
 
   // initialize the transceiver on the SPI bus
   if (!radio.begin()) {

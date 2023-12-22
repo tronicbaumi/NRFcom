@@ -6,3 +6,8 @@
 
 #define SECRET_CH_ID 2178001                        // replace 0000000 with your channel number
 #define SECRET_WRITE_APIKEY "006QGUGBVBXZ8E3Z"               // replace XYZ with your channel write API Key
+
+
+// Thingspeak account
+// biene0101@gmx.at
+// Biene0101!

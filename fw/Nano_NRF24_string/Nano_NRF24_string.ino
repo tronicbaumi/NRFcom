@@ -6,6 +6,15 @@
 #include <DallasTemperature.h>
 #include <Adafruit_SleepyDog.h>
 
+#define UART
+
+#define SLEEP_DELAY 3     // debug
+//#define SLEEP_DELAY 75    // 10min
+//#define SLEEP_DELAY 150   // 20min
+//#define SLEEP_DELAY 225   // 30min
+//#define SLEEP_DELAY 450   // 60min
+
+
 // Data wire is connected to GPIO15
 #define ONE_WIRE_BUS 5
 // Setup a oneWire instance to communicate with a OneWire device
@@ -47,6 +56,7 @@ int cnt=0;
 
 void setup() 
 {
+  delay(5000);
   Serial.begin(115200);
   Init_Radio();
   Init_LoadCell();
@@ -64,14 +74,20 @@ void loop()
   value1 = String(cnt);
   value1.toCharArray(value1char,4);
 
-  // value1 = String(analogRead(0), DEC);
-  // value1.toCharArray(value1char,8);
-  // Serial.println(value1char);
+
+  value1 = String(float(1690/float(analogRead(1))),2);
+  value1.toCharArray(value1char,8);
+  #ifdef UART
+  Serial.print("Vbat: ");
+  Serial.println(value1char);
+  #endif
 
   weight = weightfactor*scale.get_units(10);
   value2 = String(weight);
   value2.toCharArray(value2char,5);
-  Serial.print("Stockgewicht: ");Serial.println(value2char);
+  #ifdef UART
+    Serial.print("Stockgewicht: ");Serial.println(value2char);
+  #endif
 
   sensors.requestTemperatures(); // Send the command to get temperatures
   tempDS18B20 = sensors.getTempCByIndex(0);
@@ -79,11 +95,16 @@ void loop()
   {
     value3 = String(tempDS18B20);
     value3.toCharArray(value3char,8);
+  #ifdef UART
     Serial.print("StockTemperature: ");Serial.println(value3char);
+  #endif
+
   }
   else
   {
+    #ifdef UART    
     Serial.println("Error: Could not read temperature data");
+    #endif
   }
 
   char csvString[64] = "";
@@ -95,27 +116,42 @@ void loop()
   strcat(csvString,value3char);
   strcat(csvString,";");
 
+  #ifdef UART 
   Serial.println(csvString);
+  #endif
   //Serial.println(sizeof(csvString));
   radio.write(&csvString, sizeof(csvString));
+  #ifdef UART 
   Serial.println("Message sent.");
+  #endif
 
   cnt++;
 
   //delay(3000);
-
-  //for(int i=0;i<75;i++)
+  radio.powerDown();
+  scale.power_down();
+  for(int i=0;i<SLEEP_DELAY;i++)
   {
+    #ifdef UART 
     Serial.println("Going to sleep ...");
-    delay(100);
-    int sleepMS = Watchdog.sleep(1000);
+
+    #endif
+    
+    delay(10);
+    int sleepMS = Watchdog.sleep(8000);
+    #ifdef UART 
     Serial.print("I'm awake now! I slept for ");
     Serial.print(sleepMS, DEC);
     Serial.println(" milliseconds.");
+    #endif
     
   }
+  #ifdef UART 
   Serial.println();
-  
+  #endif
+
+  radio.powerUp();
+  scale.power_up();
 }
 
 

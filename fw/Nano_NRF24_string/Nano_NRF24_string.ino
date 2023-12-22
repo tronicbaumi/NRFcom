@@ -32,7 +32,7 @@ HX711 scale;
 RF24 radio(7, 8); // (CE, CSN)
 const byte address[6] = "1RF24"; // address / identifier
 
-char value0char[5] = "";
+char value0char[3] = "";
 char value1char[3] = "";
 char value2char[8] = "";
 char value3char[8] = "";
@@ -53,11 +53,11 @@ float weight = 0;
 float weightfactor = 1;
 char weightString[12];
 
-int cnt=0;
+unsigned int cnt=0;
 
 void setup() 
 {
-  delay(5000);
+ // delay(5000);
   Serial.begin(115200);
   Serial.println("Beehive 'Scale started....");
   Serial.println("==========================");
@@ -74,8 +74,10 @@ void setup()
 void loop() 
 {
  
-  value0 = String(cnt);
-  value0.toCharArray(value1char,4);
+  value0 = String(cnt++,DEC);
+  value0.toCharArray(value0char,3);
+  Serial.print("Counter: ");
+  Serial.println(value0);
 
 
   value1 = String(float(1690/float(analogRead(1))),2);
@@ -112,6 +114,7 @@ void loop()
 
   char csvString[64] = "";
   strcat(csvString,value0char);
+  strcat(csvString,";");
   strcat(csvString,value1char);
   strcat(csvString,";");
   strcat(csvString,value2char);
@@ -127,8 +130,6 @@ void loop()
   #ifdef UART 
   Serial.println("Message sent.");
   #endif
-
-  cnt++;
 
   //delay(3000);
   radio.powerDown();

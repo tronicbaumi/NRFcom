@@ -53,7 +53,7 @@ void loop() {
       // data4 = text.substring(Lsub[4]+1,Lsub[5]);
       // data5 = text.substring(Lsub[5]+1,text.length()-2);
       // Lind=1;
-      // text="";
+      text="";
       Serial.println (data0);
       Serial.println (data1);
       Serial.println (data2);

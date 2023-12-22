@@ -8,7 +8,8 @@
 
 #define UART
 
-#define SLEEP_DELAY 3     // debug
+#define SLEEP_DELAY 1     // debug
+//#define SLEEP_DELAY 3     // debug
 //#define SLEEP_DELAY 75    // 10min
 //#define SLEEP_DELAY 150   // 20min
 //#define SLEEP_DELAY 225   // 30min
@@ -31,7 +32,7 @@ HX711 scale;
 RF24 radio(7, 8); // (CE, CSN)
 const byte address[6] = "1RF24"; // address / identifier
 
-char value0char[5] = "Data;";
+char value0char[5] = "";
 char value1char[3] = "";
 char value2char[8] = "";
 char value3char[8] = "";
@@ -58,6 +59,8 @@ void setup()
 {
   delay(5000);
   Serial.begin(115200);
+  Serial.println("Beehive 'Scale started....");
+  Serial.println("==========================");
   Init_Radio();
   Init_LoadCell();
 
@@ -71,8 +74,8 @@ void setup()
 void loop() 
 {
  
-  value1 = String(cnt);
-  value1.toCharArray(value1char,4);
+  value0 = String(cnt);
+  value0.toCharArray(value1char,4);
 
 
   value1 = String(float(1690/float(analogRead(1))),2);
